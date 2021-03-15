@@ -353,7 +353,7 @@ b95 = df5.b95[lvi:plot_end]
 t50 = df5.t50[lvi:plot_end]
 b50 = df5.b50[lvi:plot_end]
 df5.to_csv('scenarios.csv', columns=[
-           'inz', 'mutanten', 't95', 'b95', 't50', 'b50'])
+           'inz', 'mutanten', 'best', 't95', 'b95', 't50', 'b50'])
 # %%
 
 # fit to current case numbers to make continuous
@@ -394,7 +394,7 @@ formatter = mdates.ConciseDateFormatter(locator, formats=[
     '%Y', '%-d.%b', '%-d', '%H:%M', '%H:%M', '%S.%f'], show_offset=False)
 ax.xaxis.set_major_locator(locator)
 ax.xaxis.set_major_formatter(formatter)
-ax.set_xlim(left=df5.index[ps-1], right=df5.index[plot_end])
+ax.set_xlim(left=df5.index[ps], right=df5.index[plot_end])
 # ax.yaxis.set_major_locator(ticker.MultipleLocator(25))
 
 plt.title(
@@ -407,7 +407,7 @@ plt.grid(axis='x', b=True, which='both', color='#999999',
          linestyle='-', alpha=0.06, zorder=-10)
 
 plt.subplots_adjust(left=0.13, right=0.95, top=0.9, bottom=0.15)
-fig.text(0.94, 0.03, "Datenstand: " + "14. März 2021, " +
+fig.text(0.94, 0.03, "Datenstand: " + "15. März 2021, " +
          "Datenquelle: RKI & Risklayer, Analyse: @CorneliusRoemer", size=7, va="bottom", ha="right")
 plt.legend(prop={'size': 8})
 plt.savefig('de.png', dpi=400)
