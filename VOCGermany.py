@@ -407,7 +407,7 @@ plt.grid(axis='x', b=True, which='both', color='#999999',
          linestyle='-', alpha=0.06, zorder=-10)
 
 plt.subplots_adjust(left=0.13, right=0.95, top=0.9, bottom=0.15)
-fig.text(0.94, 0.03, "Datenstand: " + "15. März 2021, " +
+fig.text(0.94, 0.03, "Datenstand: " + "17. März 2021, " +
          "Datenquelle: RKI & Risklayer, Analyse: @CorneliusRoemer", size=7, va="bottom", ha="right")
 plt.legend(prop={'size': 8})
 plt.savefig('de.png', dpi=400)
