@@ -272,36 +272,42 @@ class Scenario:
 
 # Best Guess
 bg = Scenario()
-bg.amp = np.log(500)/2
-bg.ph = 70
+bg.amp = np.log(800)/2
+bg.ph = 60
 bg.lock = 0.025
 bg.lock_start = 44
-bg.mut_effect = 0.085
+bg.mut_effect = 0.088
 bg.vacc_const = 6/10/83/30*0.7
 bg.lock2 = 0.015
 bg.lock2_start = 68
+bg.lock3 = -0.010
+bg.lock3_start = 78
 
 # Super Optimistic Seasonality and Vaccination
 bot = Scenario()
-bot.amp = np.log(2000)/2
+bot.amp = np.log(3000)/2
 bot.ph = 60
-bot.lock = 0.03
+bot.lock = 0.025
 bot.lock_start = 44
-bot.mut_effect = 0.080
+bot.mut_effect = 0.084
 bot.vacc_const = 6/10/83/30*0.7
-bot.lock2 = 0.008
+bot.lock2 = 0.015
 bot.lock2_start = 68
+bot.lock3 = -0.010
+bot.lock3_start = 76
 
 # Pessimistic
 top = Scenario()
-top.amp = np.log(100)/2
-top.ph = 30
+top.amp = np.log(300)/2
+top.ph = 60
 top.lock = 0.025
 top.lock_start = 44
-top.mut_effect = 0.09
+top.mut_effect = 0.092
 top.vacc_const = 5/10/83/30*0.7
-top.lock2 = 0.018
+top.lock2 = 0.020
 top.lock2_start = 68
+top.lock3 = -0.014
+top.lock3_start = 78
 
 scenarios = {'best': bg, 'bottom': bot, 'top': top}
 # %%
@@ -323,7 +329,9 @@ px = np.linspace(-start, end, end+start)
 
 for k, v in scenarios.items():
     def func(x, a, b, c):
-        lock_effect = v.lock2 * \
+        lock_effect = v.lock3 * \
+            np.heaviside(x-v.lock3_start, 0.5)*(x-v.lock3_start)
+        lock_effect += v.lock2 * \
             np.heaviside(x-v.lock2_start, 0.5)*(x-v.lock2_start)
         lock_effect += v.lock*np.heaviside(x-v.lock_start, 0.5) * \
             (x-v.lock_start) + v.amp*(np.cos((x-v.ph)*(1/365)*math.pi*2)-1)
@@ -344,10 +352,10 @@ ratio = 0.5
 best = df5.best[lvi:plot_end]
 top = df5.top[lvi:plot_end]
 bot = df5.bottom[lvi:plot_end]
-df5 = df5.assign(t95=(top+2)*1.03)
-df5 = df5.assign(b95=(bot-2)*0.97)
-df5 = df5.assign(b50=((1-ratio)*best + ratio * bot-1)*0.98)
-df5 = df5.assign(t50=((1-ratio)*best + ratio * top+1)*1.02)
+df5 = df5.assign(t95=(top)*1.02)
+df5 = df5.assign(b95=(bot)*0.98)
+df5 = df5.assign(b50=((1-ratio)*best + ratio * bot)*0.98)
+df5 = df5.assign(t50=((1-ratio)*best + ratio * top)*1.02)
 t95 = df5.t95[lvi:plot_end]
 b95 = df5.b95[lvi:plot_end]
 t50 = df5.t50[lvi:plot_end]
@@ -407,7 +415,7 @@ plt.grid(axis='x', b=True, which='both', color='#999999',
          linestyle='-', alpha=0.06, zorder=-10)
 
 plt.subplots_adjust(left=0.13, right=0.95, top=0.9, bottom=0.15)
-fig.text(0.94, 0.03, "Datenstand: " + "17. März 2021, " +
+fig.text(0.94, 0.03, "Datenstand: " + "21. März 2021, " +
          "Datenquelle: RKI & Risklayer, Analyse: @CorneliusRoemer", size=7, va="bottom", ha="right")
 plt.legend(prop={'size': 8})
 plt.savefig('de.png', dpi=400)
